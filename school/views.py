@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
-from .models import Course, Student
-from .forms import CourseForm, SignupForm, SigninForm, StudentForm
+from .models import Course, Student, User
+from .forms import CourseForm, CustomUserCreationForm, SigninForm, StudentForm, CustomUserChangeForm
 
 def course_list(request):
 	courses = Course.objects.all()
@@ -83,9 +83,9 @@ def signout(request):
     return redirect('course-list')
 
 def signup(request):
-    form = SignupForm()
+    form = CustomUserCreationForm()
     if request.method == 'POST':
-        form = SignupForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
 

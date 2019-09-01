@@ -14,7 +14,7 @@
 	      <th scope="col">Date of birth</th>
 	      <th scope="col">Gender</th>
 	      <th scope="col">Exam Grade</th>
-	      <th scope="col">Classroom</th>
+	      <th scope="col">Course</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -26,18 +26,18 @@
 	      <td>{{student.date_of_birth}}</td>
 	      <td>{{student.gender}}</td>
 	      <td>{{student.exam_grade}}</td>
-	      <td>{{student.classroom.name}}</td>
+	      <td>{{student.course.name}}</td>
 	    {% endfor %}
 	    </tr>
 	  </tbody>
 	</table>
   </div>
   <div class="card-body">
-    <h5 class="card-title" style="color: 000034;">{{classroom.name}} {{classroom.subject}}</h5>
-    <p class="card-text" style="color: 000034;">{{classroom.year}}</p>
-    <a href="{% url 'add-student' classroom.id %}" class="btn" style="background-color: #000034; color: white;">Add Student</a>    
-    <a href="{% url 'classroom-update' classroom.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-    <a href="{% url 'classroom-delete' classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
+    <h5 class="card-title" style="color: 000034;">{{course.name}} {{course.subject}}</h5>
+    <p class="card-text" style="color: 000034;">{{course.year}}</p>
+    <a href="{% url 'add-student' course.id %}" class="btn" style="background-color: #000034; color: white;">Add Student</a>    
+    <a href="{% url 'course-update' course.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
+    <a href="{% url 'course-delete' course.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
   </div>
 </div>
 

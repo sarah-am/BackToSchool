@@ -1,6 +1,8 @@
 from django import forms
 from .models import Course, Student
-from django.contrib.auth.models import User
+from .models import User
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -12,8 +14,21 @@ class StudentForm(forms.ModelForm):
         model = Student
         exclude = ['course','date_of_birth']
 
-class SignupForm(forms.ModelForm):
-    class Meta:
+# class SignupForm(forms.ModelForm):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'first_name', 'last_name', 'email' ,'password']
+
+#         widgets={
+#         'password': forms.PasswordInput(),
+#         }
+
+class SigninForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(required=True, widget=forms.PasswordInput())
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email' ,'password']
 
@@ -21,6 +36,7 @@ class SignupForm(forms.ModelForm):
         'password': forms.PasswordInput(),
         }
 
-class SigninForm(forms.Form):
-    username = forms.CharField(required=True)
-    password = forms.CharField(required=True, widget=forms.PasswordInput())
+class CustomUserChangeForm(UserChangeForm):
+    class Meta(UserChangeForm):
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email' ,'password']
