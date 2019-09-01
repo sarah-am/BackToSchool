@@ -22,20 +22,20 @@ from school import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('courses/', views.course_list, name='course-list'),
-    path('courses/<int:course_id>/', views.course_detail, name='course-detail'),
+    # path('courses/', views.course_list, name='course-list'),
+    # path('courses/<int:course_id>/', views.course_detail, name='course-detail'),
 
-    path('courses/create', views.course_create, name='course-create'),
-    path('courses/<int:course_id>/update/', views.course_update, name='course-update'),
-    path('courses/<int:course_id>/delete/', views.course_delete, name='course-delete'),
+    # path('courses/create', views.course_create, name='course-create'),
+    # path('courses/<int:course_id>/update/', views.course_update, name='course-update'),
+    # path('courses/<int:course_id>/delete/', views.course_delete, name='course-delete'),
 
-    path('signin/', views.signin, name='signin'),
-    path('signout/', views.signout, name='signout'),
-    path('signup/', views.signup, name='signup'),
+    # path('signin/', views.signin, name='signin'),
+    # path('signout/', views.signout, name='signout'),
+    # path('signup/', views.signup, name='signup'),
     
-    path('noaccess/', views.noaccess, name='noaccess'),
+    # path('noaccess/', views.noaccess, name='noaccess'),
 
-    path('courses/<int:course_id>/add-student/', views.add_student, name='add-student'),
+    # path('courses/<int:course_id>/add-student/', views.add_student, name='add-student'),
 ]
 
 

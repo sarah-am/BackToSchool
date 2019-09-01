@@ -7,17 +7,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Semester(models.Model):
     season_choices = (
-        ('FA', 'Fall')
-        ('SP', 'Spring')
-        ('SM', 'Summer')
-        )
+        ('FA', 'Fall'),
+        ('SP', 'Spring'),
+        ('SM', 'Summer'),
+    )
 
-    year = models.IntegerField(_('year'), default=datetime.date.today().year, validators=[MinValueValidator(2015), MaxValueValidator(datetime.date.today().year+2)])
+    year = models.IntegerField(('year'), default=datetime.date.today().year, validators=[MinValueValidator(2015), MaxValueValidator(datetime.date.today().year+2)])
     # year = models.DateField(default=datetime.date.today().year)
     season = models.CharField(max_length=6, choices=season_choices)
-
-    def __str__(self):
-        return ('%s', "", "%s") % (self.season, self.year)
 
 class Classroom(models.Model):
     title = models.CharField(max_length=120)

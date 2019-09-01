@@ -1,18 +1,18 @@
 from django import forms
-from .models import Course, Student
+from .models import Classroom, Student
 from .models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class CourseForm(forms.ModelForm):
     class Meta:
-        model = Course
+        model = Classroom
         fields = '__all__'
 
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        exclude = ['course','date_of_birth']
+        exclude = ['classroom','date_of_birth']
 
 # class SignupForm(forms.ModelForm):
 #     class Meta:
