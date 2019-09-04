@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-
 class Semester(models.Model):
     season_choices = (
         ('FA', 'Fall'),
@@ -16,19 +15,46 @@ class Semester(models.Model):
     # year = models.DateField(default=datetime.date.today().year)
     season = models.CharField(max_length=6, choices=season_choices)
 
+    class Meta:
+        # unique_together = ('season', 'year')
+        constraints = [
+            models.UniqueConstraint(fields=['season', 'year'], name='semester')
+        ]
+
+    def __str__(self):
+        return "{}, {}".format(self.season, self.year)
+
 class Classroom(models.Model):
     title = models.CharField(max_length=120)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('classroom-detail', kwargs={'classroom_id':self.id})
+
 class Student(models.Model):
     name = models.CharField(max_length=120)
-    date_of_birth = models.DateField(blank=True, null=True)
+    dob = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=(('M','Male'), ('F','Female')))
     photo = models.ImageField(upload_to="student",blank=True,null=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     email = models.EmailField(max_length=70, null=True, blank=True, unique=True)
 
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('student-detail', kwargs={'student_id':self.id})
+
+
+# class Performance(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+#     grade = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+#     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
 # class Attendance(models.Model):
 #     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
@@ -39,6 +65,9 @@ class Student(models.Model):
 
 # get or create attendance sheet for the classroom+date
 # stick to just teacher sigining in 
+
+#### Finish CRUD by Tues
+
 
 
 # class SimpleForm(forms.Form):

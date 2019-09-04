@@ -21,21 +21,21 @@ from school import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.signin, name='signin'),
 
-    # path('courses/', views.course_list, name='course-list'),
-    # path('courses/<int:course_id>/', views.course_detail, name='course-detail'),
+    path('signout/', views.signout, name='signout'),
+    path('signup/', views.signup, name='signup'),
 
-    # path('courses/create', views.course_create, name='course-create'),
-    # path('courses/<int:course_id>/update/', views.course_update, name='course-update'),
-    # path('courses/<int:course_id>/delete/', views.course_delete, name='course-delete'),
+    path('classrooms/', views.classroom_list, name='classroom-list'),
+    path('classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
 
-    # path('signin/', views.signin, name='signin'),
-    # path('signout/', views.signout, name='signout'),
-    # path('signup/', views.signup, name='signup'),
-    
-    # path('noaccess/', views.noaccess, name='noaccess'),
+    path('classrooms/create', views.classroom_create, name='classroom-create'),
+    path('classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
+    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
 
-    # path('courses/<int:course_id>/add-student/', views.add_student, name='add-student'),
+    path('classrooms/<int:classroom_id>/students/create', views.student_create, name='student-create'),
+    path('classrooms/<int:classroom_id>/students/<int:student_id>/update/', views.student_update, name='student-update'),
+    path('classrooms/<int:classroom_id>/students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
 ]
 
 
