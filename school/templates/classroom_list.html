@@ -9,7 +9,11 @@
 			<h5 class="card-title">Name: {{classroom.title}}</h5>
 			<p class="card-text">Year: {{classroom.semester}}</p>
 			<p class="card-text">Teacher: {{classroom.teacher}}</p>
-			<a href="{{classroom.get_absolute_url}}" class="btn" style="background-color: #e3f2fd; color: black;">View</a>
+
+<!-- 			<a href="{{classroom.get_absolute_url}}" class="btn" style="background-color: #e3f2fd; color: black;">View</a>
+ -->
+            <a href="{% url 'classroom-detail' semester.id classroom.id %}" class="btn" style="background-color: #000034; color: white;">View</a>
+
 		</div>
 	</div>
 </div>

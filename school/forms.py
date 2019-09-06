@@ -11,12 +11,7 @@ class SemesterForm(forms.ModelForm):
 class ClassroomForm(forms.ModelForm):
     class Meta:
         model = Classroom
-        exclude = ['teacher']
-
-        widgets={
-        'password': forms.PasswordInput(),
-        }
-        
+        fields = ['title']
 
 class StudentForm(forms.ModelForm):
     class Meta:

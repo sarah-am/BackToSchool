@@ -6,13 +6,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Semester(models.Model):
     season_choices = (
-        ('FA', 'Fall'),
-        ('SP', 'Spring'),
-        ('SM', 'Summer'),
+        ('Fall', 'Fall'),
+        ('Spring', 'Spring'),
+        ('Summer', 'Summer'),
     )
 
     year = models.IntegerField(('year'), default=datetime.date.today().year, validators=[MinValueValidator(2015), MaxValueValidator(datetime.date.today().year+2)])
-    # year = models.DateField(default=datetime.date.today().year)
     season = models.CharField(max_length=6, choices=season_choices)
 
     class Meta:
@@ -67,7 +66,6 @@ class Student(models.Model):
 # stick to just teacher sigining in 
 
 #### Finish CRUD by Tues
-
 
 
 # class SimpleForm(forms.Form):

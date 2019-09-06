@@ -26,16 +26,24 @@ urlpatterns = [
     path('signout/', views.signout, name='signout'),
     path('signup/', views.signup, name='signup'),
 
+    path('semesters/', views.semester_list, name='semester-list'),
+    path('semesters/<int:semester_id>/', views.semester_detail, name='semester-detail'),    
+    path('semesters/create/', views.semester_create, name='semester-create'),
+    path('semesters/<int:semester_id>/update/', views.semester_update, name='semester-update'),    
+
+    # separate list
     path('classrooms/', views.classroom_list, name='classroom-list'),
-    path('classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
 
-    path('classrooms/create', views.classroom_create, name='classroom-create'),
-    path('classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
-    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
+    # semester id before classroom (classroom subset of semester)
+    path('semesters/<int:semester_id>/classrooms/create/', views.classroom_create, name='classroom-create'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
 
-    path('classrooms/<int:classroom_id>/students/create', views.student_create, name='student-create'),
-    path('classrooms/<int:classroom_id>/students/<int:student_id>/update/', views.student_update, name='student-update'),
-    path('classrooms/<int:classroom_id>/students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/create', views.student_create, name='student-create'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/<int:student_id>/update/', views.student_update, name='student-update'),
+    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
+
 ]
 
 

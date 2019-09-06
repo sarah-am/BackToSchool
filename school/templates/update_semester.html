@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-	<form action="{% url 'classroom-update' semester.id classroom.id %}" method="POST" enctype="multipart/form-data">
+	<form action="{% url 'semester-update' semester.id %}" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{form|crispy}}
 		<input type="submit" value="Update" class="btn" style="background-color: #e3f2fd; color: white;">
