@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form class="form-inline my-2 my-lg-0" action="{% url 'my-students-list' %}">
+      <input class="form-control mr-sm-2" type="text" name='q' placeholder="Search" value="{{request.GET.q}}">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+<!-- <strong>{{students.name}}</strong>
+ -->
+  <div>
+    <table class="table">
+    <thead class="thead" style="background-color: #e3f2fd; color: 000034;">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Gender</th>
+        <th scope="col">Date of Birth</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{student.name}}</td>
+          <td>{{student.gender}}</td> 
+          <td>{{student.dob}}</td>
+          <td>{{student.email}}</td>
+        </tr>
+          {% endfor %}
+    </tbody>
+</table>
+</div>
+
+</div>
+
+{% endblock content %}

@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Semester(models.Model):
     season_choices = (
@@ -27,6 +29,7 @@ class Classroom(models.Model):
     title = models.CharField(max_length=120)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    # credits = models.
 
     def __str__(self):
         return self.title
@@ -47,6 +50,19 @@ class Student(models.Model):
 
     def get_absolute_url(self):
         return reverse('student-detail', kwargs={'student_id':self.id})
+
+# class Profile(models.Model):
+#     teacher = models.ForeignKey(User, on_delete=models.CASCADE)    
+#     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     # office_hours for teacher
+
+
+# @receiver(post_save, sender=User)
+# def create_profile(sender,instance,**kwargs):
+#     if kwargs.get('created', False):
+#         Profile.objects.create(user=instance)
+
 
 
 # class Performance(models.Model):

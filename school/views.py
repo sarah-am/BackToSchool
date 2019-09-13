@@ -3,10 +3,20 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from .models import Semester, Classroom, Student
 from .forms import StudentForm, SignupForm, SigninForm, SemesterForm, ClassroomForm
+from django.contrib.auth.models import User
+from django.db.models import Q
+
 
 ### SEMESTERS
 def semester_list(request):
-    semesters = Semester.objects.all()
+    semesters = Semester.objects.all().order_by('year')
+    query = request.GET.get('q')
+    if query:
+        semesters = semesters.filter(
+            Q(season__icontains=query)|
+            Q(year__icontains=query)
+        ).distinct()
+
     context = {
         "semesters": semesters,
     }
@@ -14,7 +24,7 @@ def semester_list(request):
 
 def semester_detail(request, semester_id):
     semester = Semester.objects.get(id=semester_id)
-    classrooms = Classroom.objects.filter(semester=semester)
+    classrooms = Classroom.objects.filter(semester=semester).order_by('title')
     context = {
         "semester": semester,
         "classrooms": classrooms,
@@ -58,9 +68,22 @@ def semester_update(request, semester_id):
 
 ### CLASSROOMS
 def classroom_list(request):
-    classrooms = Classroom.objects.all()
+    classrooms = Classroom.objects.all().order_by('title')
+    query = request.GET.get('q')
+    if query:
+        classrooms = classrooms.filter(
+            Q(title__icontains=query)|
+            Q(semester__icontains=query)|
+            Q(teacher__icontains=query)
+        ).distinct()
+    
+    myclasses_list = []
+    if request.user.is_authenticated:
+        myclasses_list = request.user.classroom_set.all().values_list('my classes', flat=True)        
+
     context = {
         "classrooms": classrooms,
+        "myclasses_list": myclasses_list,
     }
     return render(request, 'classroom_list.html', context)
 
@@ -68,7 +91,7 @@ def classroom_detail(request, semester_id, classroom_id):
     semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(semester=semester, id=classroom_id)    
     # classroom = Classroom.objects.filter(semester=semester)
-    students = Student.objects.filter(classroom=classroom)
+    students = Student.objects.filter(classroom=classroom).order_by('name')
     context = {
         "semester": semester,
         "classroom": classroom,
@@ -125,7 +148,54 @@ def classroom_delete(request, semester_id, classroom_id):
         return redirect('semester-detail', semester_id)
 
 
+def myclasses_list(request):
+    classrooms = Classroom.objects.filter(pk = request.user.pk)
+    # students = Student.objects.filter(user=user) 
+
+    context = {
+        "classrooms": classrooms,        
+        # "students": students,
+    }
+    return render(request, 'classroom_list.html', context)
+
+# classroom, date_joined, email, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
+
+
+# def myclasses_list(request):
+#     if request.user.is_anonymous:
+#         return redirect('signin')
+#     myclasses_list = request.user.classroom_set.all().values_list('my classes', flat=True)
+#     classrooms = Classroom.objects.filter(id__in=myclasses_list)
+
+#     context = {
+#         "classrooms": classrooms,
+#         "myclasses_list": myclasses_list,
+#     }
+#     return render(request, 'classroom_list.html', context)
+
+
 ### STUDENTS
+# def students_list(request):
+#     students = Student.objects.all().order_by('name')
+#     query = request.GET.get('q')
+#     if query:
+#         students = students.filter(
+#             Q(name__icontains=query)|
+#             Q(dob__icontains=query)|
+#             Q(gender__icontains=query)|
+#             Q(email__icontains=query)
+#         ).distinct()
+
+#     mystudents_list = []
+#     if request.user.is_authenticated:
+#         mystudents_list = request.user.mystudents_set.all().values_list('my students', flat=True)        
+    
+#     context = {
+#        "students": students,
+#        "mystudents_list": mystudents_list
+#     }
+#     return render(request, 'list.html', context)
+
 def student_create(request, semester_id, classroom_id):
     form = StudentForm()
     semester = Semester.objects.get(id=semester_id)
@@ -168,7 +238,6 @@ def student_update(request, semester_id, classroom_id, student_id):
     }
     return render(request, 'update_student.html', context)
 
-
 def student_delete(request, semester_id, classroom_id, student_id):
     semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(semester=semester, id=classroom_id)
@@ -176,6 +245,38 @@ def student_delete(request, semester_id, classroom_id, student_id):
         Student.objects.get(classroom=classroom, id=student_id).delete()
         messages.success(request, "Student Successfully Deleted!")
         return redirect('classroom-detail', semester_id, classroom_id)
+
+# teacher's list of students
+
+# students = Student.objects.filter(classroom__active=1, classroom__user=user)
+
+def mystudents_list(request):
+    students = Student.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        students = students.filter(
+            Q(name__icontains=query)|
+            Q(dob__icontains=query)|
+            Q(gender__icontains=query)|
+            Q(email__icontains=query)
+        ).distinct()
+
+    context = {
+        "students": students,   
+    }
+    return render(request, 'student_list.html', context)
+
+# def mystudents_list(request):
+#     if request.user.is_anonymous:
+#         return redirect('signin')
+#     mystudents_list = request.user.myclasses_set.all().values_list('my students', flat=True)
+#     students = Student.objects.filter(id__in=mystudents_list)
+    
+#     context = {
+#         "students": students,
+#         "mystudents_list": mystudents_list,
+#     }
+#     return render(request, 'student_list.html', context)
 
 
 ### AUTHENTICATION
@@ -193,7 +294,7 @@ def signin(request):
             auth_user = authenticate(username=username, password=password)
             if auth_user is not None:
                 login(request, auth_user)
-                return redirect('classroom-list')
+                return redirect('semester-list')
     context = {
         "form":form
     }
@@ -201,7 +302,7 @@ def signin(request):
 
 def signout(request):
     logout(request)
-    return redirect('classroom-list')
+    return redirect('signin')
 
 def signup(request):
     form = SignupForm()
@@ -214,7 +315,7 @@ def signup(request):
             user.save()
 
             login(request, user)
-            return redirect("classroom-list")
+            return redirect("semester-list")
     context = {
         "form":form,
     }

@@ -22,8 +22,21 @@ from .models import Semester, Classroom, Student
 #     search_fields = ('email',)
 #     ordering = ('email',)
 
+class ClassroomInline(admin.StackedInline):
+	model = Classroom
 
-admin.site.register(Classroom)
-admin.site.register(Semester)
+class SemesterAdmin(admin.ModelAdmin):
+	inlines = [ClassroomInline,]
+
+
+class StudentInline(admin.StackedInline):
+	model = Student
+
+class ClassroomAdmin(admin.ModelAdmin):
+	inlines = [StudentInline,]
+
+
+admin.site.register(Semester, SemesterAdmin)
+admin.site.register(Classroom, ClassroomAdmin)
 admin.site.register(Student)
 

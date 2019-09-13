@@ -32,7 +32,8 @@ urlpatterns = [
     path('semesters/<int:semester_id>/update/', views.semester_update, name='semester-update'),    
 
     # separate list
-    path('classrooms/', views.classroom_list, name='classroom-list'),
+    path('classrooms/', views.myclasses_list, name='my-classrooms-list'),
+    path('students/', views.mystudents_list, name='my-students-list'),
 
     # semester id before classroom (classroom subset of semester)
     path('semesters/<int:semester_id>/classrooms/create/', views.classroom_create, name='classroom-create'),
