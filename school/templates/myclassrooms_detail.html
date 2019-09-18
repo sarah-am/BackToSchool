@@ -9,19 +9,12 @@
 <!--     <p class="card-text" style="color: 000034;"><strong>Grade: </strong>{{classroom.grade}}</p> -->
     <p class="card-text" style="color: 000034;"><strong>Taught by: </strong>{{classroom.teacher}}</p>
     {% if request.user == classroom.teacher %}
-      <a href="{% url 'classroom-update' semester.id classroom.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-      <a href="{% url 'classroom-delete' semester.id classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
-      <a href="{% url 'take-attendance' semester.id classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Take Attendance</a>      
+      <a href="{% url 'take-attendance' classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Take Attendance</a>      
     {% endif %}
 
   </div>
 </div>
   <br>
-      <div>
-        {% if request.user == classroom.teacher %}
-          <a href="{% url 'student-create' semester.id classroom.id %}" class="btn btn-lg btn-block" style="background-color: #e3f2fd; color: #000034;">New Student</a>
-        {% endif %}
-      </div>
     <br>
   <div>
     <table class="table">
@@ -46,15 +39,6 @@
           <td>{{student.gender}}</td> 
           <td>{{student.dob}}</td>
           <td>{{student.email}}</td>
-          {% if request.user == classroom.teacher %}
-          <td>
-              <a href="{% url 'student-update' semester.id classroom.id student.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-          </td>
-          <td>
-              <a href="{% url 'student-delete' semester.id classroom.id student.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
-          </td>
-          {% endif %}
-
     </tr>
     {% endfor %}
     </tbody>

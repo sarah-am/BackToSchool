@@ -33,6 +33,9 @@ urlpatterns = [
 
     # separate list
     path('classrooms/', views.myclasses_list, name='my-classrooms-list'),
+    path('classrooms/<int:classroom_id>/', views.myclasses_detail, name='my-classrooms-detail'),
+    path('classrooms/<int:classroom_id>/attendance/', views.take_attendance, name='take-attendance'),
+
     path('students/', views.mystudents_list, name='my-students-list'),
 
     # semester id before classroom (classroom subset of semester)
@@ -40,11 +43,14 @@ urlpatterns = [
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
+    # path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/attendance/', views.take_attendance, name='take-attendance'),
+
 
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/create', views.student_create, name='student-create'),
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/<int:student_id>/update/', views.student_update, name='student-update'),
     path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
 
+    # path('attendance/create/', views.take_attendance, name='attendance-create'),
 ]
 
 

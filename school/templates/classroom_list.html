@@ -1,8 +1,29 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
     <form class="form-inline my-2 my-lg-0" action="{% url 'my-classrooms-list' %}">
+      <input class="form-control mr-sm-2" type="text" name='q' placeholder="Search" value="{{request.GET.q}}">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+    {% for classroom in classrooms %}
+		<ul class="list-group">
+  		<li class="list-group-item d-flex justify-content-between align-items-center">
+    		{{classroom.title}} {{classroom.semester}}
+    		<span class="badge">
+    			<a href="{% url 'my-classrooms-detail' classroom.id %}" class="btn" style="background-color: #000034; color: white;">View</a>
+    		</span>
+  		</li>
+		</ul>
+		{% endfor %}
+
+{% endblock content %}
+
+
+
+<!--     <form class="form-inline my-2 my-lg-0" action="{% url 'my-classrooms-list' %}">
       <input class="form-control mr-sm-2" type="text" name='q' placeholder="Search" value="{{request.GET.q}}">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -20,8 +41,10 @@
 	{% endfor %}
 </div>
 
-{% endblock content %}
+ -->
 
 
 
-<!-- <QuerySet [<Classroom: How Things Work>]> -->
+<!--        <span class="badge">
+          <a href="{% url 'take-attendance' classroom.id %}" class="btn" style="background-color: #000034; color: white;">Attendance</a>
+        </span> -->

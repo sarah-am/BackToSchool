@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
-from .models import Semester, Classroom, Student
-from .forms import StudentForm, SignupForm, SigninForm, SemesterForm, ClassroomForm
+from .models import Semester, Classroom, Student, Attendance
+from .forms import StudentForm, SignupForm, SigninForm, SemesterForm, ClassroomForm, AttendanceForm #AttendanceFormset
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.forms import modelformset_factory, inlineformset_factory
+from django.utils import timezone
 
 
 ### SEMESTERS
@@ -147,7 +149,7 @@ def classroom_delete(request, semester_id, classroom_id):
         messages.success(request, "Successfully Deleted!")
         return redirect('semester-detail', semester_id)
 
-
+#### Teacher
 def myclasses_list(request):
     classrooms = Classroom.objects.filter(pk = request.user.pk)
     # students = Student.objects.filter(user=user) 
@@ -157,6 +159,19 @@ def myclasses_list(request):
         # "students": students,
     }
     return render(request, 'classroom_list.html', context)
+
+def myclasses_detail(request, classroom_id):
+    # classrooms = Classroom.objects.filter(pk = request.user.pk)
+    classroom = Classroom.objects.get(id=classroom_id)    
+    students = Student.objects.filter(classroom=classroom).order_by('name')
+
+    context = {
+        "classroom": classroom,        
+        "students": students,
+    }
+    return render(request, 'myclassrooms_detail.html', context)   
+
+
 
 # classroom, date_joined, email, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
 
@@ -279,6 +294,145 @@ def mystudents_list(request):
 #     return render(request, 'student_list.html', context)
 
 
+### ATTENDANCE
+
+# OLD
+# def attendance_create(request):
+#     if request.user.is_anonymous:
+#         messages.error(request, "Please sign in to add attendance")
+#         return redirect('signin')
+#     form = AttendanceForm()
+#     if request.method == "POST":
+#         form = AttendanceForm(request.POST, request.FILES or None)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Attendance Successfully Created!")
+#             return redirect('attendance-list') 
+#         print (form.errors)
+#     context = {
+#         "form": form,
+#     }
+#     return render(request, 'create_attendance.html', context)
+######
+
+# def take_attendance(request, semester_id, classroom_id):
+#     """Edit children and their addresses for a single parent."""
+
+#     # parent = get_object_or_404(models.Parent, id=parent_id)
+
+#     form = AttendanceFormset()
+
+#     semester = Semester.objects.get(id=semester_id)
+#     classroom = Classroom.objects.get(semester=semester, id=classroom_id)    
+#     students = Student.objects.filter(classroom=classroom).order_by('name')
+#     attendance = Attendance.objects.filter(students)
+
+#     get, create = Attendance.objects.get_or_create(attendance=attendance)
+    
+#     if create:
+#         if request.method == 'POST':
+#             formset = forms.AttendanceFormset(request.POST, instance=classroom)
+#             if formset.is_valid():
+#                 formset.save()
+#                 return redirect('classroom-detail', semester_id, classroom_id)
+#     else:
+#         formset = forms.AttendanceFormset(instance=classroom)
+
+#     present = Attendance.objects.create(status=present, formset=formset)
+
+#     context = {
+#         'semester':semester,
+#         'classroom':classroom,
+#         'students':students,
+#         'formset':formset,
+#         'form':form,
+#         'attendance':attendance,
+#         'present':present
+#     }
+#     return render(request, 'create_attendance.html', context)
+
+
+   # for form in formset:
+   #     data = {
+   #         'cont': form.cleaned_data.get('cont'),
+   #         'cont_debit': form.cleaned_data.get('cont_debit'),
+   #         'cont_credit': form.cleaned_data.get('cont_credit'),
+   #         'balanta': form.cleaned_data.get('balanta'),
+   #     }
+   #     cont, created = Conturi.objects.get_or_create(**data)
+
+# school_attendance.classroom_id
+
+
+# def take_attendance(request, semester_id, classroom_id):
+#     semester = Semester.objects.get(id=semester_id)
+#     classroom = Classroom.objects.get(semester=semester, id=classroom_id)
+#     student = Student.objects.filter(classroom=classroom)
+#     # student = list(Student.objects.filter(classroom=classroom).values_list('name', flat=True).distinct())
+#     # attendance = Attendance.objects.filter(student=student)
+   
+#     # AttendanceFormset = modelformset_factory(Attendance, fields=("student", "status"))
+#     AttendanceFormset = inlineformset_factory(Classroom, Attendance, exclude=())
+
+#     if request.method == "POST":
+#         # formset = AttendanceFormset(request.POST, queryset=Attendance.objects.filter(attendance=attendance))
+#         formset = AttendanceFormset(request.POST, request.FILES, instance=classroom)
+#         if formset.is_valid():
+#             formset.save(commit=False)
+#             for form in formset:
+#                 data = {
+#                 # 'classroom': form.cleaned_data.get('classroom'),
+#                 # 'student': form.cleaned_data.get('student'),
+#                 'status': form.cleaned_data.get('status'),
+#                 'date': form.cleaned_data.get('date'),
+#                 'notes': form.cleaned_data.get('notes'),
+#                 }
+#                 attendance, created = Attendance.objects.get_or_create(classroom=classroom, **data)
+                
+#                 if attendance:
+#                     # attendance.status = request.POST.get('status')
+#                     attendance.save()
+
+#             formset.save()
+            
+#             # instances = formset.save(commit=False)
+#             # for instance in instances:
+#             #     instance.classroom_id = classroom.id
+#             #     instance.save()
+
+#             return redirect('my-classrooms-list')
+
+#     # formset = AttendanceFormset(queryset=Attendance.objects.filter(classroom__id=classroom.id))
+#     formset = AttendanceFormset(instance=classroom)
+
+#     context = {
+#     "formset":formset,
+#     "semester":semester,
+#     "classroom": classroom,
+#     "AttendanceFormset":AttendanceFormset
+#     }
+
+#     return render(request,"create_attendance.html", context)
+
+
+def take_attendance(request, classroom_id):
+    today = timezone.now().date()
+    classroom = Classroom.objects.get(id=classroom_id)
+    students = classroom.students.all()
+    for student in students:
+        Attendance.objects.get_or_create(classroom=classroom, student=student, date=today)
+    AttendanceFormSet = modelformset_factory(Attendance, form=AttendanceForm, extra=0)
+    formset = AttendanceFormSet(queryset=Attendance.objects.filter(student__in=students))
+    if request.method == "POST":
+        pass
+
+    context = {
+        "classroom": classroom,
+        "formset": formset,
+    }
+    return render(request, "create_attendance.html", context)
+
+
 ### AUTHENTICATION
 def signin(request):
     if request.user.is_authenticated:
@@ -320,3 +474,8 @@ def signup(request):
         "form":form,
     }
     return render(request, 'signup.html', context)
+
+
+
+
+

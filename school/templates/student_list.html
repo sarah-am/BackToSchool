@@ -18,16 +18,18 @@
         <th scope="col">Gender</th>
         <th scope="col">Date of Birth</th>
         <th scope="col">Email</th>
+        <th scope="col">Attendance</th>
       </tr>
     </thead>
     <tbody>
-        {% for student in students %}
+        {% for student in attendance %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>
-          <td>{{student.name}}</td>
-          <td>{{student.gender}}</td> 
-          <td>{{student.dob}}</td>
-          <td>{{student.email}}</td>
+          <td>{{attendance.student.name}}</td>
+          <td>{{attendance.student.gender}}</td> 
+          <td>{{attendance.student.dob}}</td>
+          <td>{{attendance.student.email}}</td>
+          <td>{{attendance.status}}</td> <!--- make dynamic and align --->
         </tr>
           {% endfor %}
     </tbody>
