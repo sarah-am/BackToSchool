@@ -2,35 +2,135 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-	<form action="{% url 'take-attendance' classroom.id %}" method="POST" enctype="multipart/form-data">
-		{% csrf_token %}
-         {{ formset.as_table }}
-		<input type="submit" value="Create" class="btn" style="background-color: #e3f2fd; color: black;">
-	</form>
+
+<form action="{% url 'take-attendance' classroom.id %}" method="POST" >
+      {% csrf_token %}
+    <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+            {{ formset.management_form }}
+
+            {% for form in formset.forms %}
+                {% if forloop.first %}
+                    <thead>
+                    <tr>
+                        {% for field in form.visible_fields %}
+                            <th>{{ field.label|capfirst }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                {% endif %}
+                <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+                    {% for field in form.visible_fields %}
+                        <td>
+                            {# Include the hidden fields in the form #}
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ field.errors.as_ul }}
+                            {{  field }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+        <input type="submit" value="Save" class="btn" style="background-color: #e3f2fd; color: black;"> 
+</form>
+
 {% endblock content %}
 
 
+<style type="text/css">
+    .no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+</style>
+
+
+<!-- <div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+  <label class="form-check-label" for="inlineCheckbox1">1</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+  <label class="form-check-label" for="inlineCheckbox2">2</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" disabled>
+  <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
+</div> -->
+
+<!-- 
+{{ formset.management_form|crispy }}
+
+    {% for form in formset.forms %}
+            <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+                {% for field in form.visible_fields %}
+                <td>
+                    {# Include the hidden fields in the form #}
+                    {% if forloop.first %}
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+                    {% endif %}
+                    {{ field.errors.as_ul }}
+                    {{ field|as_crispy_field }}
+                </td>
+                {% endfor %}
+            </tr>
+    {% endfor %} -->
 
 
 
-
-<!-- {{ children_formset.management_form }}
-{{ children_formset.non_form_errors }}
-
-{% for child_form in children_formset.forms %}
-    {{ child_form }}
-
-    {% if child_form.nested %}
-        {{ child_form.nested.management_form }}
-        {{ child_form.nested.non_form_errors }}
-
-        {% for nested_form in child_form.nested.forms %}
-            {{ nested_form }}
-        {% endfor %}
-
-    {% endif %}
-
-{% endfor %} -->
-
-
-
+        <!-- DataTables Example -->
+  <!--       <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Data Table Example</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr>
+                    <td>Tiger Nixon</td>
+                    <td>System Architect</td>
+                    <td>Edinburgh</td>
+                    <td>61</td>
+                    <td>2011/04/25</td>
+                    <td>$320,800</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div> -->
