@@ -1,52 +1,43 @@
 {% extends "base.html" %}
 
+{% block title %}{{semester.season}}, {{semester.year}} {% endblock title %}
+
 {% block content %}
-<div class="card text-center">
-  <div class="card-header" style="background-color: #e3f2fd; color: 000034; font-size: 20px;">
-    <strong>{{semester.season}} {{semester.year}}</strong>
-  </div>
-  <div class="card-body">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'semester-update' semester.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-    {% endif %}
-  </div>
-</div>
-  <br>
+
       <div>
-        {% if request.user.is_authenticated %}
-          <a href="{% url 'classroom-create' semester.id %}" class="btn btn-lg btn-block" style="background-color: #e3f2fd; color: #000034;">New Class</a>
+        {% if request.user.is_authenticated%}
+          <a href="{% url 'semester-update' semester.id %}" class="btn btn-lg btn-block" style="background-color: #283747; color: white;">Update Semester</a>
+          <a href="{% url 'classroom-create' semester.id %}" class="btn btn-lg btn-block" style="background-color: #5D6D7E; color: white;">Add Classroom</a>
         {% endif %}
       </div>
     <br>
   <div>
-    <table class="table">
-    <thead class="thead" style="background-color: #e3f2fd; color: 000034;">
+    <table class="table table-borderless">
+    <thead class="thead">
       <tr>
         <th scope="col">#</th>
         <th scope="col">Title</th>
-        <th scope="col">Semester</th>
         {% if request.user.is_authenticated%}
-        <th scope="col">View</th>
-        <th scope="col">Update</th>
-        <th scope="col">Delete</th>
+<!--         <th scope="col" style="text-align:center">Detail</th> -->
+        <th scope="col" style="text-align:center">Update</th>
+        <th scope="col" style="text-align:center">Delete</th>
         {% endif %}
       </tr>
     </thead>
     <tbody>
-      {% for classroom in classrooms %}
+      {% for classroom in semester.classrooms.all %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>
           <td>{{classroom.title}}</td>
-          <td>{{classroom.semester}}</td> 
           {% if request.user.is_authenticated %}
+<!--           <td>
+              <a href="{% url 'classroom-detail' semester.id classroom.id %}" class="btn btn-primary btn-light btn-sm btn-block" style="background-color: #ffffff; color: black;">View</a>
+          </td> -->
           <td>
-              <a href="{% url 'classroom-detail' semester.id classroom.id %}" class="btn" style="background-color: #e3f2fd; color: black;">View</a>
+              <a href="{% url 'classroom-update' classroom.id %}" class="btn btn-primary btn-light btn-sm btn-block" style="background-color: #ffffff; color: black;">Update</a>
           </td>
           <td>
-              <a href="{% url 'classroom-update' semester.id classroom.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-          </td>
-          <td>
-              <a href="{% url 'classroom-delete' semester.id classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
+              <a href="{% url 'classroom-delete' semester.id classroom.id %}" class="btn btn-primary btn-light btn-sm btn-block" style="background-color: #ffffff; color: black;">Delete</a>
           </td>
           {% endif %}
 

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Take Attendance for {{classroom.title}}{% endblock title %}
+
+{% block content %}
+
+
+<form action="{% url 'take-attendance' classroom.id %}" method="POST" >
+      {% csrf_token %}
+    <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+        		{{ formset.management_form }}
+		  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Student</th>
+      <th scope="col"> </th>
+      <th scope="col"> </th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for form in formset %}
+    <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
+  		<tr>
+			<td>{{ form.instance.student }}</td>
+			<td>{{ form.status|as_crispy_field }}</td>
+			<td>{{ form.notes|as_crispy_field }}</td>
+		</tr>
+	{% endfor %}
+  </tbody>
+</table>
+</div>
+        <input type="submit" value="Save" class="btn-sm" style="background-color: #5D6D7E; color: white;"> 
+</form>
+
+{% endblock content %}
+
+

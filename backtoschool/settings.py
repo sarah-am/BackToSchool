@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'school',
     'crispy_forms',
+    "django_tables2"
 ]
 
 MIDDLEWARE = [
