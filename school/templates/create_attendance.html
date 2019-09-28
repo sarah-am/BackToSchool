@@ -1,44 +1,38 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Take Attendance{% endblock title %}
+{% block title %}Take Attendance for {{classroom.title}}{% endblock title %}
 
 {% block content %}
+
 
 <form action="{% url 'take-attendance' classroom.id %}" method="POST" >
       {% csrf_token %}
     <div class="table-responsive">
         <table class="table table-bordered" width="100%" cellspacing="0">
-            {{ formset.management_form }}
-
-            {% for form in formset.forms %}
-                {% if forloop.first %}
-                    <thead>
-                    <tr>
-                        {% for field in form.visible_fields %}
-                            <th>{{ field.label|capfirst }}</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                {% endif %}
-                <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
-                    {% for field in form.visible_fields %}
-                        <td>
-                            {# Include the hidden fields in the form #}
-                            {% if forloop.first %}
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                            {% endif %}
-                            {{ field.errors.as_ul }}
-                            {{  field }}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+        		{{ formset.management_form }}
+		  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Student</th>
+      <th scope="col"> </th>
+      <th scope="col"> </th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for form in formset %}
+    <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
+  		<tr>
+			<td>{{ form.instance.student }}</td>
+			<td>{{ form.status|as_crispy_field }}</td>
+			<td>{{ form.notes|as_crispy_field }}</td>
+		</tr>
+	{% endfor %}
+  </tbody>
+</table>
+</div>
         <input type="submit" value="Save" class="btn-sm" style="background-color: #5D6D7E; color: white;"> 
 </form>
 
 {% endblock content %}
+
+

@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from .models import Semester, Classroom, Student, Attendance
 from .forms import StudentForm, SignupForm, SigninForm, SemesterForm, ClassroomForm, AttendanceForm
 from django.contrib.auth.models import User
-from django.db.models import Q
-from django.forms import modelformset_factory, inlineformset_factory
+from django.forms import modelformset_factory
 from django.utils import timezone
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 ### SEMESTERS ###
@@ -15,22 +12,7 @@ def semester_list(request):
     semesters = Semester.objects.all().order_by('year')
     classrooms = Classroom.objects.filter(semester__in=semesters, pk=request.user.pk).order_by('title')
     students = Student.objects.filter(classroom__in=classrooms)
-    # query = request.GET.get('q')
-    # if query:
-    #     semesters = semesters.filter(
-    #         Q(season__icontains=query)|
-    #         Q(year__icontains=query)
-    #     ).distinct()
-
-    # page = request.GET.get('page', 1)
-    # paginator = Paginator(semesters, 1)
-    
-    # try:
-    #     sem = paginator.page(page)
-    # except PageNotAnInteger:
-    #     sem = paginator.page(1)
-    # except EmptyPage:
-    #     sem = paginator.page(paginator.num_pages)
+    attendance = Attendance.objects.filter(student__in=students)
 
     context = {
         "semesters": semesters,
@@ -39,25 +21,14 @@ def semester_list(request):
     }
     return render(request, 'semester_list.html', context)
 
-def semester_detail(request, semester_id):
-    semester = Semester.objects.get(id=semester_id)
-    classrooms = Classroom.objects.filter(semester=semester, pk=request.user.pk).order_by('title')
-    context = {
-        "semester": semester,
-        "classrooms": classrooms,
-    }
-    return render(request, 'semester_detail.html', context)
-
 def semester_create(request):
     if request.user.is_anonymous:
-        messages.error(request, "Please sign in to create a new semester")
         return redirect('signin')
     form = SemesterForm()
     if request.method == "POST":
         form = SemesterForm(request.POST, request.FILES or None)
         if form.is_valid():
             form.save()
-            messages.success(request, "Semester Successfully Created!")
             return redirect('semester-list') 
         print (form.errors)
     context = {
@@ -73,7 +44,6 @@ def semester_update(request, semester_id):
             form = SemesterForm(request.POST, instance=semester)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Successfully Edited!")
                 return redirect('semester-list')
             print (form.errors)
     context = {
@@ -83,27 +53,6 @@ def semester_update(request, semester_id):
     return render(request, 'update_semester.html', context)
 
 ### CLASSROOMS ###
-def classroom_list(request):
-    if request.user.is_anonymous:
-        return redirect('signin')
-    classrooms = Classroom.objects.filter(pk = request.user.pk).order_by('title')
-
-    context = {
-        "classrooms": classrooms,        
-    }
-    return render(request, 'classroom_list.html', context)
-
-def classroom_detail(request, semester_id, classroom_id):
-    semester = Semester.objects.get(id=semester_id)
-    classroom = Classroom.objects.get(semester=semester, id=classroom_id)    
-    students = Student.objects.filter(classroom=classroom).order_by('name')
-    context = {
-        "semester": semester,
-        "classroom": classroom,
-        "students": students,
-    }
-    return render(request, 'classroom_detail.html', context)
-
 def classroom_create(request, semester_id):
     form = ClassroomForm()
     semester = Semester.objects.get(id=semester_id)
@@ -115,8 +64,7 @@ def classroom_create(request, semester_id):
                 classroom.semester = semester
                 classroom.teacher = request.user
                 classroom.save()
-                messages.success(request, "Classroom Successfully Created!")
-                return redirect('classroom-list')
+                return redirect('semester-list')
             print (form.errors)
     context = {
         "form": form,
@@ -125,7 +73,6 @@ def classroom_create(request, semester_id):
     return render(request, 'create_classroom.html', context)
 
 def classroom_update(request, classroom_id):
-    # semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(id=classroom_id)
     if request.user.is_authenticated:
         form = ClassroomForm(instance=classroom)
@@ -133,12 +80,10 @@ def classroom_update(request, classroom_id):
             form = ClassroomForm(request.POST, instance=classroom)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Successfully Edited!")
                 return redirect('my-classrooms-detail', classroom_id)
             print (form.errors)
     context = {
     "form": form,
-    # "semester": semester,
     "classroom": classroom,
     }
     return render(request, 'update_classroom.html', context)
@@ -147,8 +92,7 @@ def classroom_delete(request, semester_id, classroom_id):
     Semester.objects.get(id=semester_id)
     if request.user.is_authenticated:
         Classroom.objects.get(id=classroom_id).delete()
-        messages.success(request, "Successfully Deleted!")
-        return redirect('semester-detail', semester_id)
+        return redirect('semester-list')
 
 #### Teacher ####
 def myclasses_detail(request, classroom_id):
@@ -164,10 +108,9 @@ def myclasses_detail(request, classroom_id):
     }
     return render(request, 'myclassrooms_detail.html', context)   
 
-### STUDENTS
+### STUDENTS ###
 def student_create(request, classroom_id):
     form = StudentForm()
-    # semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(id=classroom_id)
     if request.user == classroom.teacher:
         if request.method == "POST":
@@ -176,18 +119,15 @@ def student_create(request, classroom_id):
                 student = form.save(commit=False)
                 student.classroom = classroom
                 student.save()
-                messages.success(request, "Student Successfully Added!")
                 return redirect('my-classrooms-detail', classroom_id)
             print (form.errors)
     context = {
     "form": form,
-    # "semester": semester,
     "classroom": classroom,
     }
     return render(request, 'create_student.html', context)
 
 def student_update(request, classroom_id, student_id):
-    # semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(id=classroom_id)
     student = Student.objects.get(classroom=classroom, id=student_id)
     if request.user == classroom.teacher:
@@ -196,42 +136,21 @@ def student_update(request, classroom_id, student_id):
             form = StudentForm(request.POST, instance=student)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Student Successfully Edited!")
-                return redirect('classroom-detail', classroom_id)
+                return redirect('my-classrooms-detail', classroom_id)
             print (form.errors)
     context = {
     "form": form,
-    # "semester": semester,
     "classroom": classroom,
     "student": student,
     }
     return render(request, 'update_student.html', context)
 
 def student_delete(request, classroom_id, student_id):
-    # semester = Semester.objects.get(id=semester_id)
     classroom = Classroom.objects.get(id=classroom_id)
     if request.user == classroom.teacher:
         Student.objects.get(classroom=classroom, id=student_id).delete()
-        messages.success(request, "Student Successfully Deleted!")
-        return redirect('classroom-detail', classroom_id)
+        return redirect('my-classrooms-detail', classroom_id)
 
-def mystudents_list(request):
-    classrooms = Classroom.objects.filter(pk = request.user.pk).order_by('title')
-    students = Student.objects.filter(classroom__in=classrooms)
-    query = request.GET.get('q')
-    if query:
-        students = students.filter(
-            Q(name__icontains=query)|
-            Q(dob__icontains=query)|
-            Q(gender__icontains=query)|
-            Q(email__icontains=query)
-        ).distinct()
-
-    context = {
-        "students": students,
-        "classrooms": classrooms, 
-    }
-    return render(request, 'student_list.html', context)
 
 ### ATTENDANCE ### 
 def take_attendance(request, classroom_id):
@@ -257,7 +176,7 @@ def take_attendance(request, classroom_id):
         "classroom": classroom,
         "formset": formset,
     }
-    return render(request, "create_attendance2.html", context)
+    return render(request, "create_attendance.html", context)
 
 
 ### AUTHENTICATION ### 

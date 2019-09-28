@@ -31,10 +31,6 @@ class Classroom(models.Model):
     title = models.CharField(max_length=120)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='classrooms')
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='classrooms')
-    # start_time = models.TimeField(null=True)
-    # end_time = models.TimeField(null=True)
-    # date = models.DateField(null=True)
-    # credits = models.IntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return self.title

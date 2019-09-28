@@ -11,12 +11,6 @@ class ClassroomForm(forms.ModelForm):
     class Meta:
         model = Classroom
         exclude = ['semester', 'teacher']
-
-        widgets = {
-            'start_time': forms.TimeInput(attrs={'type':'time'}),
-            'end_time': forms.TimeInput(attrs={'type':'time'}),
-            'date':forms.DateInput(attrs={'type':'date'})
-        }
     
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -33,14 +27,8 @@ class AttendanceForm(forms.ModelForm):
         exclude = ['classroom', 'date', 'student']
 
         widgets = {
-            # 'status': forms.RadioSelect(attrs={'class': "custom-control custom-radio custom-control-inline", 'type':'radio'}),
-            # 'student': forms.TextInput(attrs={'readonly class':'form-control-plaintext'}),
             'notes': forms.Textarea(attrs={'rows':"1", 'cols':"25"})
         }
-
-    # def __init__(self, *args, **kwargs): 
-    #     super().__init__(*args, **kwargs)                       
-    #     self.fields['student'].disabled = True
 
 class SignupForm(forms.ModelForm):
     class Meta:

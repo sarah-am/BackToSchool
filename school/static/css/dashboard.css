@@ -104,3 +104,29 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+/*
+ * Buttons
+ */
+ 
+.table-button-4 {
+  background-color: #000034; 
+  color: white;
+}
+
+.table-button-1 {
+  background-color: #283747; 
+  color: white;
+}
+
+.table-button-2 {
+  background-color: #5D6D7E; 
+  color: white;
+}
+
+.table-button-3 {
+  background-color: #B0C4DE; 
+  color: white;
+}
+
+

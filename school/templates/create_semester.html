@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
+{% block title %}Add Semester{% endblock title %}
+
 {% block content %}
 	<form action="{% url 'semester-create' %}" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}

@@ -4,13 +4,11 @@
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
  
  {% if user.is_authenticated %}
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Welcome, {{user.username}}</a>
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'signin' %}">Welcome, {{user.username|title}}</a>
   {% else %}
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Back to School</a>
   {% endif %}
-  
-<!--   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
- -->  
+
   <ul class="nav justify-content-end px-3">
   	{% if user.is_authenticated %}
     <li class="nav-item text-nowrap">
@@ -33,27 +31,9 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <span data-feather="home"></span>
-              Dashboard <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="{% url 'semester-list' %}">
               <span data-feather="file"></span>
-              Semesters
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'classroom-list' %}">
-              <span data-feather="shopping-cart"></span>
-              Classes
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'my-students-list' %}">
-              <span data-feather="users"></span>
-              Students
+              Semesters 
             </a>
           </li>
         </ul>
