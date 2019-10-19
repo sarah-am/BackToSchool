@@ -1,5 +1,5 @@
 from django import forms
-from .models import Semester, Classroom, Student, Attendance, Performance, Test
+from .models import Semester, Classroom, Student, Attendance
 from .models import User
 
 
@@ -34,26 +34,6 @@ class AttendanceForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows':"1", 'cols':"25"})
         }
 
-
-class PerformanceForm(forms.ModelForm):
-    class Meta:
-        model = Performance
-        exclude = ['classroom', 'student', 'upload']
-
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows':"1", 'cols':"25"})
-        }
-
-
-class TestForm(forms.ModelForm):
-    class Meta:
-        model = Test
-        fields = '__all__'
-    
-        widgets = {
-            'date':forms.DateInput(attrs={'type':'date'})
-        }
-        
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)

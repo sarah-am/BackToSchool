@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Semester, Classroom, Student, Attendance, Performance, Test
+from .models import Semester, Classroom, Student, Attendance
 
 
 class ClassroomInline(admin.StackedInline):
@@ -22,7 +22,4 @@ admin.site.register(Semester, SemesterAdmin)
 admin.site.register(Classroom, ClassroomAdmin)
 admin.site.register(Student)
 admin.site.register(Attendance)
-admin.site.register(Performance)
-admin.site.register(Test)
-
 

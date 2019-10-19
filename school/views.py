@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from .models import Classroom, Student, Attendance, Performance, Test
-from .forms import StudentForm, SignupForm, SigninForm, ClassroomForm, AttendanceForm, UploadFileForm, PerformanceForm, TestForm
+from .models import Classroom, Student, Attendance
+from .forms import StudentForm, SignupForm, SigninForm, ClassroomForm, AttendanceForm, UploadFileForm
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
-from django.db.models import Q
 import csv
 
 ### CLASSROOMS ###
@@ -16,14 +15,7 @@ def classroom_list(request):
         return redirect('signin')
     
     classrooms_list = Classroom.objects.filter(teacher=request.user).order_by('title')
-    
-    #Search bar (does not work)
-    query = request.GET.get('q')
-    for classroom in classrooms_list:
-        if query: 
-            students = classroom.students.filter(classroom=classroom).filter(Q(name__icontains=query)).distinct()
 
-    #Pagination (works)
     page = request.GET.get('page', 1)
 
     paginator = Paginator(classrooms_list, 3)
@@ -37,7 +29,7 @@ def classroom_list(request):
     context = {
         "classrooms": classrooms,
     }
-    return render(request, 'classroom_list2.html', context)
+    return render(request, 'classroom_list.html', context)
 
 def classroom_detail(request, classroom_id):
     if request.user.is_anonymous:
@@ -167,66 +159,6 @@ def take_attendance(request, classroom_id):
     return render(request, "create_attendance.html", context)
 
 
-### PERFORMANCE ### 
-def record_performance(request, classroom_id):
-    classroom = Classroom.objects.get(id=classroom_id)
-    students = classroom.students.all()
-    
-    # for student in students:
-    #     Performance.objects.get_or_create(classroom=classroom, student=student)
-
-    PerformanceFormSet = modelformset_factory(Performance, form=PerformanceForm, extra=0)
-    qs = Performance.objects.filter(student__in=students)
-    formset = PerformanceFormSet(queryset=qs)
-    
-    if request.method == "POST":
-        formset = PerformanceFormSet(request.POST, queryset=qs)
-        if formset.is_valid():
-            for form in formset:
-                if form.is_valid():
-                    form.save()
-            formset.save()
-            return redirect('classroom-list')
-
-    context = {
-        "classroom": classroom,
-        "formset": formset,
-    }
-    return render(request, "record_performance2.html", context)
-
-# def record_performance(request):
-#     # classroom = Classroom.objects.filter(teacher=request.user)
-#     # performance = Performance.objects.filter(id=student_id, classroom=classroom) 
-#     form = PerformanceForm()
-    
-#     if request.method == "POST":
-#         form = PerformanceForm(request.POST)
-#         if form.is_valid():
-#             performance = form.save(commit=False)
-#             performance.save()
-#             return redirect('classroom-list')
-
-#     context = {
-#         # "performance": performance,
-#         "form": form,
-#     }
-#     return render(request, "record_performance.html", context)
-
-def test_create(request):
-    form = TestForm()
-    if request.method == "POST":
-        form = TestForm(request.POST)
-        if form.is_valid():
-            test = form.save(commit=False)
-            test.save()
-            return redirect('classroom-list')
-        print (form.errors)
-    
-    context = {
-        "form": form,
-    }
-    return render(request, 'create_test.html', context)
-
 ### UPLOAD/EXPORT ### 
 def upload_file(request):
     form = UploadFileForm()
@@ -243,7 +175,7 @@ def upload_file(request):
     }
     return render(request, 'upload.html', context)
 
-def export_users_csv(request):
+def export_attendance_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="attendances.csv"'
 

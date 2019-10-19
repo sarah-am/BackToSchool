@@ -30,19 +30,15 @@ urlpatterns = [
     path('classrooms/create/', views.classroom_create, name='classroom-create'),
     path('classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
     path('classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
-    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
-    path('classrooms/<int:classroom_id>/performance/', views.record_performance, name='record-performance2'),    
+    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),    
     path('classrooms/<int:classroom_id>/attendance/', views.take_attendance, name='take-attendance'),
 
     path('students/create', views.student_create, name='student-create'),
     path('students/<int:student_id>/update/', views.student_update, name='student-update'),
     path('students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
-    path('performance/', views.record_performance, name='record-performance'),
-
-    path('test/create', views.test_create, name='test-create'),
 
     path('upload/', views.upload_file, name='upload-file'),
-    path('export/', views.export_users_csv, name='export_users_csv'),
+    path('export/', views.export_attendance_csv, name='export_attendance_csv'),
     path('chart/', views.chart, name='chart'),
 
 ]

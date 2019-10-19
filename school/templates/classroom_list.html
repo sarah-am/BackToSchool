@@ -17,21 +17,16 @@
     </div>
 
 {# Dropdown Buttons #}
-<div class="input-group input-group-sm">
-  <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="q" value="{{request.GET.q}}">
-  <div class="input-group-append">
+  <div class="btn-group pull-right" role="group">
     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
     <div class="dropdown-menu">
       <a class="dropdown-item" href="{% url 'classroom-update' classroom.id %}">Update Classroom</a>
       <a class="dropdown-item" href="{% url 'student-create' %}">Add Student</a>
-      <a class="dropdown-item" href="{% url 'test-create' %}">Add Test</a>
       <a class="dropdown-item" href="{% url 'take-attendance' classroom.id %}">Take Attendance</a>
-      <a class="dropdown-item" href="{% url 'record-performance2' classroom.id %}">Record Performance</a>
       <div role="separator" class="dropdown-divider"></div>
       <a class="dropdown-item" href="#">Upload</a>
       <a class="dropdown-item" href="#">Download</a>
     </div>
-  </div>
 </div>
 
 {# Classroom Details Table #}
@@ -43,8 +38,7 @@
       <th>Times Present</th>
       <th>Times Late</th>
       <th>Times Absent</th>
-      <th>Avg. Performance</th>
-      <th>Add Grades</th>
+      <th>Average Attendance</th>
     </tr>
   </thead>
   <tbody>
@@ -55,8 +49,7 @@
         <td>{{ student.present }}</td>
         <td>{{ student.late }}</td>
         <td>{{ student.absent }}</td>
-        <td>{{ student.performance }}</td>
-        <td ><a href="{% url 'record-performance2' classroom.id  %}">Add</td>
+        <td>{{ student.status }}</td>
       </tr>
     {% endfor %}
   </tbody>
