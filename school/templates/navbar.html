@@ -31,9 +31,15 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'semester-list' %}">
+            <a class="nav-link" href="{% url 'classroom-list' %}">
               <span data-feather="file"></span>
-              Semesters 
+              Classrooms
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'classroom-create' %}">
+              <span data-feather="file"></span>
+              Add Classroom
             </a>
           </li>
         </ul>
@@ -46,13 +52,13 @@
         </h6>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'export_users_csv' %}">
               <span data-feather="file-text"></span>
               Attendance
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'chart' %}">
               <span data-feather="file-text"></span>
               Performance
             </a>

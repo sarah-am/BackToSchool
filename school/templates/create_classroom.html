@@ -4,10 +4,10 @@
 {% block title %}Add Class{% endblock title %}
 
 {% block content %}
-	<form action="{% url 'classroom-create' semester.id %}" method="POST" enctype="multipart/form-data">
+	<form action="{% url 'classroom-create' %}" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{form|crispy}}
 		<br>
-		<input type="submit" value="Create" class="btn-sm" style="background-color: #5D6D7E; color: white;">
+		<input type="submit" value="Create" class="btn-sm btn-dark">
 	</form>
 {% endblock content %}

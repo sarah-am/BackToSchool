@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Take Attendance for {{classroom.title}}{% endblock title %}
+{% block title %}Record Grades for {{classroom.title}}{% endblock title %}
 
 {% block content %}
 
 
-<form action="{% url 'take-attendance' classroom.id %}" method="POST" >
+<form action="{% url 'record-performance2' classroom.id %}" method="POST" >
       {% csrf_token %}
     <div class="table-responsive">
         <table class="table table-bordered" width="100%" cellspacing="0">
@@ -16,6 +16,7 @@
       <th scope="col">Student</th>
       <th scope="col"> </th>
       <th scope="col"> </th>
+      <th scope="col"> </th>
     </tr>
   </thead>
   <tbody>
@@ -23,7 +24,8 @@
     <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
   		<tr>
 			<td>{{ form.instance.student }}</td>
-			<td>{{ form.status|as_crispy_field }}</td>
+      <td>{{ form.test|as_crispy_field }}</td>
+			<td>{{ form.grade|as_crispy_field }}</td>
 			<td>{{ form.notes|as_crispy_field }}</td>
 		</tr>
 	{% endfor %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Classrooms <span class="badge badge-dark">{{ classrooms.count }}</span> {% endblock title %}
+
+{% block content %}
+
+
+{# Classrooms list #}
+<div class="card">
+  	{% for classroom in classrooms %}
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <strong>{{classroom.title}}</strong>
+        <span>{{classroom.semester.season}}, {{classroom.semester.year}}</span>
+        </button>
+      </h5>
+    </div>
+
+{# Dropdown Buttons #}
+<div class="input-group input-group-sm">
+  <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="q" value="{{request.GET.q}}">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{% url 'classroom-update' classroom.id %}">Update Classroom</a>
+      <a class="dropdown-item" href="{% url 'student-create' %}">Add Student</a>
+      <a class="dropdown-item" href="{% url 'test-create' %}">Add Test</a>
+      <a class="dropdown-item" href="{% url 'take-attendance' classroom.id %}">Take Attendance</a>
+      <a class="dropdown-item" href="{% url 'record-performance2' classroom.id %}">Record Performance</a>
+      <div role="separator" class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#">Upload</a>
+      <a class="dropdown-item" href="#">Download</a>
+    </div>
+  </div>
+</div>
+
+{# Classroom Details Table #}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Student</th>
+      <th>Times Present</th>
+      <th>Times Late</th>
+      <th>Times Absent</th>
+      <th>Avg. Performance</th>
+      <th>Add Grades</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for student in classroom.students.all %}
+      <tr>
+        <td>{{ student.id }}</td>
+        <td href="#">{{ student.name|title }}</td>
+        <td>{{ student.present }}</td>
+        <td>{{ student.late }}</td>
+        <td>{{ student.absent }}</td>
+        <td>{{ student.performance }}</td>
+        <td ><a href="{% url 'record-performance2' classroom.id  %}">Add</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endfor %}
+
+
+{# Pagination #}
+{% if classrooms.has_other_pages %}
+  <ul class="pagination justify-content-center">
+    {% if classrooms.has_previous %}
+      <li class="page-item">
+      	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ classrooms.previous_page_number }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in classrooms.paginator.page_range %}
+      {% if classrooms.number == i %}
+        <li class="page-item active">
+        	<span>{{ i }} <span class="sr-only">(current)</span></span>
+        </li>
+      {% else %}
+        <li class="page-item">
+        	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ i }}">{{ i }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if classrooms.has_next %}
+      <li class="page-item">
+      	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ classrooms.next_page_number }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock content %}

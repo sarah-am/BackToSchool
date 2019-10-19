@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Add Student{% endblock title %}
+{% block title %}Add Test{% endblock title %}
 
 {% block content %}
-	<form action="{% url 'student-create' %}" method="POST">
+	<form action="{% url 'test-create' %}" method="POST">
 		{% csrf_token %}
 		{{form|crispy}}
 		<br>

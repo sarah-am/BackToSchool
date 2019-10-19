@@ -110,7 +110,7 @@ body {
  */
  
 .table-button-4 {
-  background-color: #000034; 
+  background-color: #000034!important; 
   color: white;
 }
 
@@ -127,6 +127,12 @@ body {
 .table-button-3 {
   background-color: #B0C4DE; 
   color: white;
+}
+
+.submit {
+  background-color: #5D6D7E!important; 
+  color: white;
+  size: small;
 }
 
 

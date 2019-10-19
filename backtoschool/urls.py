@@ -26,20 +26,25 @@ urlpatterns = [
     path('signout/', views.signout, name='signout'),
     path('signup/', views.signup, name='signup'),
 
-    path('semesters/', views.semester_list, name='semester-list'),
-    path('semesters/create/', views.semester_create, name='semester-create'),
-    path('semesters/<int:semester_id>/update/', views.semester_update, name='semester-update'),
-
-    path('semesters/<int:semester_id>/classrooms/create/', views.classroom_create, name='classroom-create'),
-    path('semesters/<int:semester_id>/classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
-    
-    path('classrooms/<int:classroom_id>/', views.myclasses_detail, name='my-classrooms-detail'),
+    path('classrooms/', views.classroom_list, name='classroom-list'),
+    path('classrooms/create/', views.classroom_create, name='classroom-create'),
+    path('classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
     path('classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
+    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),
+    path('classrooms/<int:classroom_id>/performance/', views.record_performance, name='record-performance2'),    
     path('classrooms/<int:classroom_id>/attendance/', views.take_attendance, name='take-attendance'),
 
-    path('classrooms/<int:classroom_id>/students/create', views.student_create, name='student-create'),
-    path('classrooms/<int:classroom_id>/students/<int:student_id>/update/', views.student_update, name='student-update'),
-    path('classrooms/<int:classroom_id>/students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
+    path('students/create', views.student_create, name='student-create'),
+    path('students/<int:student_id>/update/', views.student_update, name='student-update'),
+    path('students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
+    path('performance/', views.record_performance, name='record-performance'),
+
+    path('test/create', views.test_create, name='test-create'),
+
+    path('upload/', views.upload_file, name='upload-file'),
+    path('export/', views.export_users_csv, name='export_users_csv'),
+    path('chart/', views.chart, name='chart'),
+
 ]
 
 
