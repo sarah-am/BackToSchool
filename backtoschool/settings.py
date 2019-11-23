@@ -40,7 +40,11 @@ INSTALLED_APPS = [
 
     'school',
     'crispy_forms',
-    "django_tables2"
+    
+    "django_tables2", #get rid of this later
+    
+    'jet',
+
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
