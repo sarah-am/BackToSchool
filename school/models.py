@@ -64,5 +64,4 @@ class Attendance(models.Model):
     status = models.CharField(max_length=1, choices=(('P','Present'), ('A','Absent'), ('L','Late')), default='A')
     date = models.DateField()
     notes = models.CharField(max_length=500, blank=True)
-    upload = models.FileField(upload_to='uploads/%Y/%m/%d/')
 

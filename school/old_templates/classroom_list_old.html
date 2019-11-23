@@ -7,6 +7,29 @@
 
 {# Classrooms list #}
 
+{# <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <strong>{{classroom.title}}</strong>
+        <span>({{classroom.semester.season}}, {{classroom.semester.year}})</span>
+        </button>
+        <div class="btn-group-sm float-right dropleft">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'classroom-update' classroom.id %}">Update Classroom</a>
+            <a class="dropdown-item" href="{% url 'student-create' %}">Add Student</a>
+            <a class="dropdown-item" href="{% url 'take-attendance' classroom.id %}">Take Attendance</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Upload</a>
+            <a class="dropdown-item" href="#">Download</a>
+          </div>
+        </div>
+      </h5>
+    </div> #}
+
+{# Dropdown Buttons #}
+
+{# Classroom Details Table #}
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -14,24 +37,25 @@
       <th>Classroom</th>
       <th>Semester</th>
       <th># of Students</th>
-      <th>Description</th>
-    </tr>
+{#       <th>Description</th>
+ #}    </tr>
   </thead>
   <tbody>
     {% for classroom in classrooms %}
       <tr>
-        <td>{{ classroom.id }}</td>
-        <td><a href="{% url 'classroom-detail' classroom.id %}">{{ classroom.title }}</a></td>
+        <td href="{% url 'classroom-detail' %}">{{ classroom.id }}</td>
+        <td>{{ classroom.title }}</td>
         <td>{{ classroom.semester.season }}, {{ classroom.semester.year }}</td>
         <td>{{ classroom.students.count }}</td>
-        <td>{{ classroom.description }}</td>
-      </tr>
+{#         <td>{{ classroom.description|truncate:5 }}</td>
+ #}      </tr>
     {% endfor %}
   </tbody>
 </table>
 </div>
 <br>
 </div>
+{% endfor %}
 
 
 {# Pagination #}

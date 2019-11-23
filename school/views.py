@@ -9,6 +9,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 import csv
 
+# keep classes in a table, 
+# add classroom detail page, 
+# have actions in sidebar, 
+# implement new template, 
+# try upload function, <---
+# try attednance per date, <---
+# remove average attendance
+
 ### CLASSROOMS ###
 def classroom_list(request):
     if request.user.is_anonymous:
@@ -18,7 +26,7 @@ def classroom_list(request):
 
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(classrooms_list, 3)
+    paginator = Paginator(classrooms_list, 20)
     try:
         classrooms = paginator.page(page)
     except PageNotAnInteger:
@@ -34,10 +42,12 @@ def classroom_list(request):
 def classroom_detail(request, classroom_id):
     if request.user.is_anonymous:
         return redirect('signin')
-    classroom = Classroom.objects.get(id=classroom_id, teacher=request.user)    
+    classroom = Classroom.objects.get(id=classroom_id, teacher=request.user)  
+    students = classroom.students.all()
 
     context = {
-        "classroom": classroom,        
+        "classroom": classroom,      
+        "students":students  
     }
     return render(request, 'classroom_detail.html', context)  
 
@@ -75,9 +85,10 @@ def classroom_update(request, classroom_id):
     return render(request, 'update_classroom.html', context)
 
 def classroom_delete(request, classroom_id):
+    classroom = Classroom.objects.get(id=classroom_id)
     if request.user == classroom.teacher:
-        Classroom.objects.get(id=classroom_id).delete()
-        return redirect('classroom-list')
+        classroom.delete()
+        return redirect('classroom-detail', classroom_id)
 
 
 ### STUDENTS ###
@@ -174,6 +185,47 @@ def upload_file(request):
         'attendance':attendance
     }
     return render(request, 'upload.html', context)
+
+
+# fix this
+# def upload_ongoing_file(request):
+# #     if not request.user.is_authenticated():
+# #         return redirect("/admin")
+# # ​
+# #     if not request.user.is_staff:
+# #         return redirect("/admin")
+#     context = {}
+#     form = UploadFileForm()
+#     if request.method == 'POST':
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             f = request.FILES['file']
+#             with open('file.txt', 'wb+') as destination: # play around with this; with csv file try to figure out the what kind you need 'file.txt' & 'wb+''
+#                 for chunk in f.chunks():
+#                     destination.write(chunk)
+#             csv_file = open('file.txt','r')
+#             reader = csv.DictReader(csv_file)
+#             for row in reader:
+#                 # loops through to check if it already exists
+#                 try:
+#                     new_student, created = Student.objects.get_or_create(name = row['name']) #clean up this part, might not need a try/except
+#                 except Exception:
+#                     new_student, created = Student.objects.get_or_create(name = row['\ufeffname']) #clean up
+#                 # fill out fields in the model
+#                 new_student.name = row['name']
+#                 new_student.dob = row['dob']
+#                 new_student.gender = row['gender']
+#                 new_student.email = row['email']                
+#                 new_student.classroom = Classroom.objects.get(short_name=row['classroom'])
+#                 new_student.save()
+#             return render(request, 'upload.html', context)
+#         else:
+#             print("form is not valid")
+#     else:
+#         context['form'] = form
+#     return render(request, 'upload.html', context)
+
+    # wait, should I upload attendance or just the student details???
 
 def export_attendance_csv(request):
     response = HttpResponse(content_type='text/csv')
