@@ -1,43 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}{{classroom.title}} {% endblock title %}
-
 {% block content %}
 
-  <br>
-    <br>
-  <div>
-    <table class="table table-borderless">
-    <thead class="thead">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col" style="text-align:center">Name</th>
-        <th scope="col" style="text-align:center">Gender</th>
-        <th scope="col" style="text-align:center">Date of Birth</th>
-        <th scope="col" style="text-align:center">Email</th>
-        <th scope="col" style="text-align:center">Attendance</th>      
-        {% if request.user == classroom.teacher %}
-        <th scope="col" style="text-align:center">Update</th>
-        <th scope="col" style="text-align:center">Delete</th>
-        {% endif %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for student in students %}
-        <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td scope="col" style="text-align:center">{{student.name}}</td>
-          <td scope="col" style="text-align:center">{{student.gender}}</td> 
-          <td scope="col" style="text-align:center">{{student.dob}}</td>
-          <td scope="col" style="text-align:center">{{student.email}}</td>
-          <td><a href="{% url 'take-attendance' classroom.id %}">Attendance</a></td>
-          <td><a href="{% url 'classroom-update' classroom.id %}">Update</a></td>
-          <td><a href="{% url 'classroom-delete' classroom.id %}">Delete</a></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-</div>
+        <!-- DataTables Example -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Data Table Example</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Email</th>
+                    <th>Attendance</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Email</th>
+                    <th>Attendance</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                {% for student in students %}
+                  <tr>
+                    <td>{{ classroom.id }}</td>
+                    <td>{{student.name}}</td>
+                    <td>{{student.gender}}</td> 
+                    <td>{{student.dob}}</td>
+                    <td>{{student.email}}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div>
 
 {% endblock content %}

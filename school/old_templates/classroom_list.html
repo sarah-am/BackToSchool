@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Classrooms <span class="badge badge-dark">{{ classrooms.count }}</span> {% endblock title %}
+
+{% block content %}
+
+
+{# Classrooms list #}
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Classroom</th>
+      <th>Semester</th>
+      <th># of Students</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for classroom in classrooms %}
+      <tr>
+        <td>{{ classroom.id }}</td>
+        <td><a href="{% url 'classroom-detail' classroom.id %}">{{ classroom.title }}</a></td>
+        <td>{{ classroom.semester.season }}, {{ classroom.semester.year }}</td>
+        <td>{{ classroom.students.count }}</td>
+        <td>{{ classroom.description }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<br>
+</div>
+
+
+{# Pagination #}
+{% if classrooms.has_other_pages %}
+  <ul class="pagination justify-content-center">
+    {% if classrooms.has_previous %}
+      <li class="page-item">
+      	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ classrooms.previous_page_number }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in classrooms.paginator.page_range %}
+      {% if classrooms.number == i %}
+        <li class="page-item active">
+        	<span>{{ i }} <span class="sr-only">(current)</span></span>
+        </li>
+      {% else %}
+        <li class="page-item">
+        	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ i }}">{{ i }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if classrooms.has_next %}
+      <li class="page-item">
+      	<a class="page-link" tabindex="-1" aria-disabled="true" href="?page={{ classrooms.next_page_number }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock content %}
