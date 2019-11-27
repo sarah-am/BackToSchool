@@ -61,7 +61,7 @@ class Student(models.Model):
 class Attendance(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='attendance')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='attendance')
-    status = models.CharField(max_length=1, choices=(('P','Present'), ('A','Absent'), ('L','Late')), default='A')
+    status = models.CharField(max_length=1, choices=(('P','Present'), ('A','Absent'), ('L','Late')), default='P')
     date = models.DateField()
     notes = models.CharField(max_length=500, blank=True)
 

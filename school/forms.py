@@ -21,7 +21,7 @@ class StudentForm(forms.ModelForm):
         exclude = '__all__'
 
         widgets = {
-            'dob':forms.DateInput(attrs={'type':'date'})
+            'dob':forms.DateInput(attrs={'type':'date'}),
         }
 
 
@@ -31,7 +31,8 @@ class AttendanceForm(forms.ModelForm):
         exclude = ['classroom', 'date', 'student', 'upload']
 
         widgets = {
-            'notes': forms.Textarea(attrs={'rows':"1", 'cols':"25"})
+            'notes': forms.Textarea(attrs={'rows':"1", 'cols':"25"}),
+            'status': forms.RadioSelect()
         }
 
 

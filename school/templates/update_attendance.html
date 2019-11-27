@@ -1,12 +1,14 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 {% load crispy_forms_tags %}
 
-{% block title %}Take Attendance for {{classroom.title}}{% endblock title %}
+{# <form action="/date/" method="post">
+    <label for="date">Your name: </label>
+    <input id="date" type="text" name="date" value="{{ current_date }}">
+    <input type="submit" value="OK">
+</form> #}
 
-{% block content %}
-
-
-<form action="{% url 'take-attendance' classroom.id %}" method="POST" >
+<form action="{% url 'update-attendance' classroom_id '2019-11-25' %}" method="POST" >
       {% csrf_token %}
     <div class="table-responsive">
         <table class="table table-bordered" width="100%" cellspacing="0">
@@ -33,6 +35,4 @@
         <input type="submit" value="Save" class="btn-sm btn-dark"> 
 </form>
 
-{% endblock content %}
-
-
+</html>

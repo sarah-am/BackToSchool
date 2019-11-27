@@ -5,8 +5,8 @@
         <!-- DataTables Example -->
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fas fa-table"></i>
-            Data Table Example</div>
+            <i class="fas fa-chalkboard"></i>
+            Classrooms</div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -17,6 +17,8 @@
                     <th>Semester</th>
                     <th># of Students</th>
                     <th>Description</th>
+                    <th>Update</th>
+                    <th>Delete</th>                       
                   </tr>
                 </thead>
                 <tfoot>
@@ -26,6 +28,8 @@
                     <th>Semester</th>
                     <th># of Students</th>
                     <th>Description</th>
+                    <th>Update</th>
+                    <th>Delete</th>                    
                   </tr>
                 </tfoot>
                 <tbody>
@@ -36,6 +40,8 @@
                     <td>{{ classroom.semester.season }}, {{ classroom.semester.year }}</td>
                     <td>{{ classroom.students.count }}</td>
                     <td>{{ classroom.description|truncatechars:20 }}</td>
+                    <td><a href="{% url 'classroom-update' classroom.id %}"><i class="fas fa-edit"></i></a></td>
+                    <td><a href="{% url 'classroom-delete' classroom.id %}"><i class="fas fa-trash-alt"></i></a></td>                    
                   </tr>
                 {% endfor %}
                 </tbody>

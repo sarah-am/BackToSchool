@@ -17,6 +17,11 @@ import csv
 # try attednance per date, <---
 # remove average attendance
 
+
+# table
+# update attendance
+
+
 ### CLASSROOMS ###
 def classroom_list(request):
     if request.user.is_anonymous:
@@ -169,6 +174,27 @@ def take_attendance(request, classroom_id):
     }
     return render(request, "create_attendance.html", context)
 
+def update_attendance(request, classroom_id, date):
+    attendance = Attendance.objects.filter(classroom_id=classroom_id, date=date)
+    
+    AttendanceFormSet = modelformset_factory(Attendance, form=AttendanceForm, extra=0)
+    formset = AttendanceFormSet(queryset=attendance) #queryset or instance?
+    
+    if request.method == "POST":
+        formset = AttendanceFormSet(request.POST, queryset=attendance)
+        if formset.is_valid():
+            for form in formset:
+                if form.is_valid():
+                    form.save()
+            formset.save()
+            return redirect('classroom-list')
+
+    context = {
+        "classroom_id": classroom_id,
+        "formset": formset,
+    }
+    return render(request, "update_attendance.html", context)
+
 
 ### UPLOAD/EXPORT ### 
 def upload_file(request):
@@ -245,7 +271,7 @@ def export_attendance_csv(request):
 
 ### VISUAL DATA ### 
 def chart(request):
-    return render(request,'chart.html', {'attendance':Attendance.objects.all()})
+    return render(request,'charts.html', {'attendance':Attendance.objects.all()})
 
 
 ### AUTHENTICATION ### 
