@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Update Classroom{% endblock title %}
+{% block breadcrumb %}
+  <!-- Breadcrumbs-->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'signin' %}">Classrooms</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'classroom-detail' classroom.id %}">{{classroom.title}}</a>
+    </li>
+    <li class="breadcrumb-item active">Edit Class</li>
+  </ol>
+{% endblock breadcrumb %}
 
 {% block content %}
 	<form action="{% url 'classroom-update' classroom.id %}" method="POST" enctype="multipart/form-data">

@@ -17,7 +17,6 @@ import csv
 # try attednance per date, <---
 # remove average attendance
 
-
 # table
 # update attendance
 
@@ -44,17 +43,6 @@ def classroom_list(request):
     }
     return render(request, 'classroom_list.html', context)
 
-def classroom_detail(request, classroom_id):
-    if request.user.is_anonymous:
-        return redirect('signin')
-    classroom = Classroom.objects.get(id=classroom_id, teacher=request.user)  
-    students = classroom.students.all()
-
-    context = {
-        "classroom": classroom,      
-        "students":students  
-    }
-    return render(request, 'classroom_detail.html', context)  
 
 def classroom_create(request):
     if request.user.is_anonymous:
@@ -110,8 +98,8 @@ def student_detail(request, student_id):
 
 def student_create(request):
     form = StudentForm()
-    if not request.user == classroom.teacher:
-        raise HttpResponse("Invalid Authorization")
+    if request.user.is_anonymous:
+        return redirect('signin')
     if request.method == "POST":
         form = StudentForm(request.POST)
         if form.is_valid():
@@ -147,9 +135,11 @@ def student_delete(request, student_id):
 
 
 ### ATTENDANCE ### 
-def take_attendance(request, classroom_id):
+def detail_and_attendance(request, classroom_id):
+    if request.user.is_anonymous:
+        return redirect('signin')
     today = timezone.now().date()
-    classroom = Classroom.objects.get(id=classroom_id)
+    classroom = Classroom.objects.get(id=classroom_id, teacher=request.user)
     students = classroom.students.all()
     
     for student in students:
@@ -166,13 +156,16 @@ def take_attendance(request, classroom_id):
                 if form.is_valid():
                     form.save()
             formset.save()
-            return redirect('classroom-list')
+            return redirect('classroom-detail')
 
     context = {
         "classroom": classroom,
         "formset": formset,
+        "students":students
+
     }
-    return render(request, "create_attendance.html", context)
+    return render(request, "classroom_detail.html", context)
+
 
 def update_attendance(request, classroom_id, date):
     attendance = Attendance.objects.filter(classroom_id=classroom_id, date=date)

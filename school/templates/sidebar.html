@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
+  <div id="wrapper">
+
+
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
       <li class="nav-item">
@@ -16,12 +19,11 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <a class="dropdown-item" href="{% url 'classroom-create' %}">Add Class</a>
+        {% if request.get_full_path == '/classrooms/<int:classroom_id>/' %}
           <div class="dropdown-divider"></div>
-
-        {% block classbuttons %}
-
-        
-        {% endblock classbuttons %}
+          <a class="dropdown-item" href="{% url 'classroom-update' classroom.id %}">Edit Classroom </a>
+          <a class="dropdown-item" href="{% url 'student-create' %}">Add Student</a>
+        {% endif %}
 
         </div>
       </li>
@@ -39,3 +41,4 @@
     </ul>
 
 </html>
+

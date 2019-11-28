@@ -41,7 +41,7 @@
                     <td>{{ classroom.students.count }}</td>
                     <td>{{ classroom.description|truncatechars:20 }}</td>
                     <td><a href="{% url 'classroom-update' classroom.id %}"><i class="fas fa-edit"></i></a></td>
-                    <td><a href="{% url 'classroom-delete' classroom.id %}"><i class="fas fa-trash-alt"></i></a></td>                    
+                    <td><a href="{% url 'classroom-delete' classroom.id %}"><i class="fas fa-trash-alt"></i></a></td>
                   </tr>
                 {% endfor %}
                 </tbody>

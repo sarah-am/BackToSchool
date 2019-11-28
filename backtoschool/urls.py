@@ -28,14 +28,14 @@ urlpatterns = [
 
     path('classrooms/', views.classroom_list, name='classroom-list'),
     path('classrooms/create/', views.classroom_create, name='classroom-create'),
-    path('classrooms/<int:classroom_id>/', views.classroom_detail, name='classroom-detail'),
+    path('classrooms/<int:classroom_id>/', views.detail_and_attendance, name='classroom-detail'),
     path('classrooms/<int:classroom_id>/update/', views.classroom_update, name='classroom-update'),
-    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'),    
-    path('classrooms/<int:classroom_id>/attendance', views.take_attendance, name='take-attendance'),
+    path('classrooms/<int:classroom_id>/delete/', views.classroom_delete, name='classroom-delete'), 
+       
     path('classrooms/<int:classroom_id>/<date>/', views.update_attendance, name='update-attendance'),
 
 
-    path('students/create', views.student_create, name='student-create'),
+    path('classrooms/students/create', views.student_create, name='student-create'),
     path('students/<int:student_id>/update/', views.student_update, name='student-update'),
     path('students/<int:student_id>/delete/', views.student_delete, name='student-delete'),
 

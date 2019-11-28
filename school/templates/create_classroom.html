@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Add Class{% endblock title %}
+{% block breadcrumb %}
+  <!-- Breadcrumbs-->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'signin' %}">Classrooms</a>
+    </li>
+    <li class="breadcrumb-item active">Add Class</li>
+  </ol>
+{% endblock breadcrumb %}
 
 {% block content %}
 	<form action="{% url 'classroom-create' %}" method="POST" enctype="multipart/form-data">

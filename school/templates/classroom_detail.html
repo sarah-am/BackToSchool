@@ -1,88 +1,100 @@
 {% extends "base.html" %}
-
-      {% block breadcrumb %}
-
-        <!-- Breadcrumbs-->
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="index.html">Dashboard</a>
-          </li>
-          <li class="breadcrumb-item active">{{classroom.title}}</li>
-        </ol>
-
-      {% endblock breadcrumb %}
-
-{% block classbuttons %}
-    {{ block.super }}
-
-<a class="dropdown-item" href="#">Add Student</a>
-<a class="dropdown-item" href="{% url 'create-attendance' classroom.id %}">Take Attendance</a>
-
-{% endblock classbuttons %}
-
+{% load crispy_forms_tags %}
+{% block breadcrumb %}
+  <!-- Breadcrumbs-->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'signin' %}">Classrooms</a>
+    </li>
+    <li class="breadcrumb-item active">{{classroom.title}}</li>
+  </ol>
+{% endblock breadcrumb %}
 {% block content %}
-
-<a href="{% url 'take-attendance' classroom.id %}">Take Attendance</a>
-
-<div class="row ">
-        <!-- DataTables Example -->
-        <div class="card col-6 mb-3">
-          <div class="card-header">
-            <i class="fas fa-user-graduate"></i>
-            Students</div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
+  <div class="row justify-content-between no-gutters">
+    <!-- Class Details -->
+    <div class="card col m-1">
+      <div class="card-header">
+      <i class="fas fa-user-graduate fa-fw"></i> Students</div>
+      <div class="card-body">
+        <div class="table-responsive" id="dataTable">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Present</th>
+                <th>Absent</th>
+                <th>Late</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tfoot>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Present</th>
+              <th>Absent</th>
+              <th>Late</th>
+              <th></th>
+            </tr>
+            </tfoot>
+            <tbody>
+              {% for student in students %}
+                <tr>
+                  <td>{{ student.id }}</td>
+                  <td>{{student.name}}</td>
+                  <td>{{student.present}}</td>
+                  <td>{{student.absent}}</td>
+                  <td>{{student.late}}</td>
+                  <td>  <a href="{% url 'student-update' student.id %}">  <i class="fas fa-edit fa-fw"></i></a>  <a href="{% url 'student-delete' student.id %}"><i class="fas fa-trash-alt fa-fw"></i></a>  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    </div>
+    <div>  </div>
+    <!-- Attendance Form -->
+    <div class="card col m-1">
+      <div class="card-header">
+      <i class="fas fa-clipboard-check fa-fw"></i> Attendance for {% now "F d, Y"%}</div>
+      <div class="card-body">
+        <form action="{% url 'classroom-detail' classroom.id  %}" method="POST" >
+          {% csrf_token %}
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              {{ formset.management_form }}
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>P</th>
+                  <th>A</th>
+                  <th>L</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in formset %}
+                  <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
                   <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                    <th>Late</th>  
-                    <th></th> 
-
-                  </tr>
-                </thead>
-                <tfoot>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                    <th>Late</th>
-                    <th></th> 
-             
-                  </tr>
-                </tfoot>
-                <tbody>
-                {% for student in students %}
-                  <tr>
-                    <td>{{ student.id }}</td>
-                    <td>{{student.name}}</td>
-                    <td>{{student.present}}</td>
-                    <td>{{student.absent}}</td>
-                    <td>{{student.late}}</td>                    
-                    <td><a href="{% url 'student-update' student.id %}"><i class="fas fa-edit"></i></a><a href="{% url 'student-delete' student.id %}"><i class="fas fa-trash-alt"></i></a></td>  
+                    <td>{{ form.instance.student }}</td>
+                    {% for radio in form.status %}
+                      <td>{{ radio.tag }}</td>
+                    {% endfor %}
+                    {% for textarea in form.notes %}
+                      <td>{{ textarea.tag }}</td>
+                    {% endfor %}
                   </tr>
                 {% endfor %}
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
           </div>
-          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-        </div>
-
-        <!-- DataTables Example -->
-        <div class="card col-6 mb-3">
-          <div class="card-header">
-            <i class="fas fa-user-graduate"></i>
-            Students</div>
-          <div class="card-body">
-          {% include "create_attendance.html" with request.path=‘attendance/’%}
-          </div>
-          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-        </div>
-</div>
-
+          <input type="submit" value="Save" class="btn-sm btn-block btn-dark">
+        </form>
+      </div>
+      <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    </div>
+  </div>
 {% endblock content %}
