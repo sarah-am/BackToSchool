@@ -9,18 +9,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 import csv
 
-# keep classes in a table, 
-# add classroom detail page, 
-# have actions in sidebar, 
-# implement new template, 
-# try upload function, <---
-# try attednance per date, <---
-# remove average attendance
-
-# table
-# update attendance
-
-
 ### CLASSROOMS ###
 def classroom_list(request):
     if request.user.is_anonymous:
@@ -81,8 +69,7 @@ def classroom_delete(request, classroom_id):
     classroom = Classroom.objects.get(id=classroom_id)
     if request.user == classroom.teacher:
         classroom.delete()
-        return redirect('classroom-detail', classroom_id)
-
+        return redirect('classroom-list')
 
 ### STUDENTS ###
 def student_detail(request, student_id):
@@ -106,26 +93,26 @@ def student_create(request):
             student = form.save(commit=False)
             student.save()
             return redirect('classroom-list')
-        print (form.errors)
     context = {
         "form": form,
     }
     return render(request, 'create_student.html', context)
 
-def student_update(request, student_id):
+def student_update(request, classroom_id, student_id):
+    classroom = Classroom.objects.get(id=classroom_id)
     if not request.user == classroom.teacher:
         raise HttpResponse("Invalid Authorization")
-    student = Student.objects.get(id=student_id)
+    student = classroom.students.get(id=student_id)
     form = StudentForm(instance=student)
     if request.method == "POST":
         form = StudentForm(request.POST, instance=student)
         if form.is_valid():
             form.save()
             return redirect('classroom-list')
-        print (form.errors)
     context = {
     "form": form,
     "student": student,
+    "classroom":classroom
     }
     return render(request, 'update_student.html', context)
 
@@ -156,7 +143,7 @@ def detail_and_attendance(request, classroom_id):
                 if form.is_valid():
                     form.save()
             formset.save()
-            return redirect('classroom-detail')
+            
 
     context = {
         "classroom": classroom,
@@ -206,6 +193,42 @@ def upload_file(request):
     return render(request, 'upload.html', context)
 
 
+def upload_file(request):
+    if request.user.is_anonymous:
+        return redirect("signin")
+    # if not request.user == classroom.teacher:
+    #     raise HttpResponse("Invalid Authorization")
+    context = {}
+    form = UploadFileForm()
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['file']
+            with open('file.txt', 'wb+') as destination: # play around with this; with csv file try to figure out the what kind you need 'file.txt' & 'wb+''
+                for chunk in f.chunks():
+                    destination.write(chunk)
+            csv_file = open('file.txt','r')
+            reader = csv.DictReader(csv_file)
+            for row in reader:
+                # loops through to check if it already exists
+                try:
+                    new_student, created = Student.objects.get_or_create(name = row['name']) #clean up this part, might not need a try/except
+                except Exception:
+                    new_student, created = Student.objects.get_or_create(name = row['\ufeffname']) #clean up
+                # fill out fields in the model
+                new_student.name = row['name']
+                new_student.dob = row['dob']
+                new_student.gender = row['gender']
+                new_student.email = row['email']                
+                new_student.classroom = Classroom.objects.get(short_name=row['classroom'])
+                new_student.save()
+            return render(request, 'upload.html', context)
+        else:
+            print("form is not valid")
+    else:
+        context['form'] = form
+    return render(request, 'upload.html', context)
+
 # fix this
 # def upload_ongoing_file(request):
 # #     if not request.user.is_authenticated():
@@ -244,7 +267,7 @@ def upload_file(request):
 #         context['form'] = form
 #     return render(request, 'upload.html', context)
 
-    # wait, should I upload attendance or just the student details???
+    # should I upload attendance or just the student details???
 
 def export_attendance_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -264,8 +287,12 @@ def export_attendance_csv(request):
 
 ### VISUAL DATA ### 
 def chart(request):
-    return render(request,'charts.html', {'attendance':Attendance.objects.all()})
+    return render(request,'chart.html', {'attendance': Attendance.objects.all()})
 
+### 404 Page ### 
+def error_404(request):
+        context = {}
+        return render(request,'404.html', context)
 
 ### AUTHENTICATION ### 
 def signin(request):
@@ -292,6 +319,7 @@ def signout(request):
     logout(request)
     return redirect('signin')
 
+## need to adjust signup
 def signup(request):
     form = SignupForm()
     if request.method == 'POST':

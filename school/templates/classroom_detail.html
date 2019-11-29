@@ -46,7 +46,7 @@
                   <td>{{student.present}}</td>
                   <td>{{student.absent}}</td>
                   <td>{{student.late}}</td>
-                  <td>  <a href="{% url 'student-update' student.id %}">  <i class="fas fa-edit fa-fw"></i></a>  <a href="{% url 'student-delete' student.id %}"><i class="fas fa-trash-alt fa-fw"></i></a>  </td>
+                  <td>  <a href="{% url 'student-update' classroom.id student.id %}">  <i class="fas fa-edit fa-fw"></i></a>  <a href="{% url 'student-delete' classroom.id student.id %}"><i class="fas fa-trash-alt fa-fw"></i></a>  </td>
                 </tr>
               {% endfor %}
             </tbody>

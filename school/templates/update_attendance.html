@@ -1,38 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% block breadcrumb %}
+  <!-- Breadcrumbs-->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'signin' %}">Classrooms</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{{get_absolute_url}}">{{classroom.title}}</a>
+    </li>
+    <li class="breadcrumb-item active">Update Attendance</li>
+  </ol>
+{% endblock breadcrumb %}
+{% block content %}
+{# Use an input to select date?? #}
+<form action="/date/" method="post">
+    <label for="date">Date: </label>
+    <input id="date" type="text" name="date" value="{{ attendance.date }}">
+    <input type="submit" value="OK">
+</form>
+{# attendance form #}
+<form action="{% url 'update-attendance' classroom_id '2019-11-25' %}" method="POST" >
+          {% csrf_token %}
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              {{ formset.management_form }}
+              {{ formset.date }}
+          {{ form.id }}
+
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>P</th>
+                  <th>A</th>
+                  <th>L</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in formset %}
+                  <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
+                  <tr>
+                    <td>{{ form.instance.student }}</td>
+                    {% for radio in form.status %}
+                      <td>{{ radio.tag }}</td>
+                    {% endfor %}
+                    {% for textarea in form.notes %}
+                      <td>{{ textarea.tag }}</td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <input type="submit" value="Update" class="btn-sm btn-block btn-dark">
+        </form>
+
+{% endblock content %}
+
 
 {# <form action="/date/" method="post">
-    <label for="date">Your name: </label>
-    <input id="date" type="text" name="date" value="{{ current_date }}">
+    <label for="date">Date: </label>
+    <input id="date" type="text" name="date" value="{{ attendance.date }}">
     <input type="submit" value="OK">
 </form> #}
 
-<form action="{% url 'update-attendance' classroom_id '2019-11-25' %}" method="POST" >
-      {% csrf_token %}
-    <div class="table-responsive">
-        <table class="table table-bordered" width="100%" cellspacing="0">
-        		{{ formset.management_form }}
-		  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Student</th>
-      <th scope="col"> </th>
-      <th scope="col"> </th>
-    </tr>
-  </thead>
-  <tbody>
-  	{% for form in formset %}
-    <input type="hidden" name="form-{{forloop.counter0}}-id" value="{{ form.instance.id }}">
-  		<tr>
-			<td>{{ form.instance.student }}</td>
-			<td>{{ form.status|as_crispy_field }}</td>
-			<td>{{ form.notes|as_crispy_field }}</td>
-		</tr>
-	{% endfor %}
-  </tbody>
-</table>
-</div>
-        <input type="submit" value="Save" class="btn-sm btn-dark"> 
-</form>
-
-</html>

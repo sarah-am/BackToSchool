@@ -30,8 +30,8 @@ class Classroom(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        return reverse('classroom-list')
+    # def get_absolute_url(self):
+    #     return reverse('classroom-detail', kwargs={'classroom_id':self.id})
 
 
 class Student(models.Model):

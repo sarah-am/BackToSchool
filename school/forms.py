@@ -24,7 +24,6 @@ class StudentForm(forms.ModelForm):
             'dob':forms.DateInput(attrs={'type':'date'}),
         }
 
-
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
@@ -35,6 +34,10 @@ class AttendanceForm(forms.ModelForm):
             'status': forms.RadioSelect()
         }
 
+    # still figuring how to allow date only for update (superimposing it?):
+    # def __init__(self, *args, **kwargs):
+    #     self.widget = forms.DateInput(attrs={'type':'date'})
+    #     super().__init__(*args, **kwargs)
 
 class UploadFileForm(forms.Form):
     # title = forms.CharField(max_length=50)
